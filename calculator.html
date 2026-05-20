@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>계산기</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #f0f0f0;
+            margin: 0;
+        }
+        .calculator {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: 20px;
+            width: 280px;
+        }
+        .display {
+            background: #1a1a1a;
+            color: white;
+            text-align: right;
+            padding: 20px;
+            font-size: 32px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            min-height: 60px;
+            word-break: break-all;
+        }
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+        button {
+            padding: 18px;
+            font-size: 18px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background: #f0f0f0;
+        }
+        button:hover { background: #e0e0e0; }
+        .operator { background: #e8e8e8; color: #333; }
+        .equals { background: #c00; color: white; }
+        .equals:hover { background: #a00; }
+        .clear { background: #ddd; }
+        .zero { grid-column: span 2; }
+    </style>
+</head>
+<body>
+<div class="calculator">
+    <div class="display" id="display">0</div>
+    <div class="buttons">
+        <button class="clear" onclick="clearAll()">C</button>
+        <button class="clear" onclick="deleteLast()">⌫</button>
+        <button class="operator" onclick="inputOperator('%')">%</button>
+        <button class="operator" onclick="inputOperator('/')">÷</button>
+
+        <button onclick="inputNumber('7')">7</button>
+        <button onclick="inputNumber('8')">8</button>
+        <button onclick="inputNumber('9')">9</button>
+        <button class="operator" onclick="inputOperator('*')">×</button>
+
+        <button onclick="inputNumber('4')">4</button>
+        <button onclick="inputNumber('5')">5</button>
+        <button onclick="inputNumber('6')">6</button>
+        <button class="operator" onclick="inputOperator('-')">−</button>
+
+        <button onclick="inputNumber('1')">1</button>
+        <button onclick="inputNumber('2')">2</button>
+        <button onclick="inputNumber('3')">3</button>
+        <button class="operator" onclick="inputOperator('+')">+</button>
+
+        <button class="zero" onclick="inputNumber('0')">0</button>
+        <button onclick="inputNumber('.')">.</button>
+        <button class="equals" onclick="calculate()">=</button>
+    </div>
+</div>
+
+<script>
+    let 현재입력 = '0';
+    let 이전입력 = '';
+    let 연산자 = '';
+    let 새입력 = true;
+
+    function updateDisplay(value) {
+        document.getElementById('display').innerText = value;
+    }
+
+    function inputNumber(num) {
+        if (새입력) {
+            현재입력 = num;
+            새입력 = false;
+        } else {
+            if (num === '.' && 현재입력.includes('.')) return;
+            현재입력 = 현재입력 === '0' ? num : 현재입력 + num;
+        }
+        updateDisplay(현재입력);
+    }
+
+    function inputOperator(op) {
+        이전입력 = 현재입력;
+        연산자 = op;
+        새입력 = true;
+    }
+
+    function calculate() {
+        let a = parseFloat(이전입력);
+        let b = parseFloat(현재입력);
+        let 결과 = 0;
+        if (연산자 === '+') 결과 = a + b;
+        else if (연산자 === '-') 결과 = a - b;
+        else if (연산자 === '*') 결과 = a * b;
+        else if (연산자 === '/') 결과 = b === 0 ? '오류' : a / b;
+        else if (연산자 === '%') 결과 = a % b;
+        현재입력 = String(결과);
+        새입력 = true;
+        updateDisplay(현재입력);
+    }
+
+    function clearAll() {
+        현재입력 = '0';
+        이전입력 = '';
+        연산자 = '';
+        새입력 = true;
+        updateDisplay('0');
+    }
+
+    function deleteLast() {
+        if (현재입력.length > 1) {
+            현재입력 = 현재입력.slice(0, -1);
+        } else {
+            현재입력 = '0';
+        }
+        updateDisplay(현재입력);
+    }
+</script>
+</body>
+</html>
